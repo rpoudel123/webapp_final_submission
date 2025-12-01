@@ -1,11 +1,72 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div id="app">
+    <NavBar :user="user" @logout="handleLogout" />
+
+    <main v-if="!user" class="center">
+      <AuthForm @logged-in="handleLogin" />
+    </main>
+
+    <main v-else class="layout">
+      <RandomAdvice />
+      <SavedAdviceList />
+    </main>
+  </div>
 </template>
 
-<style scoped></style>
+<script>
+import { setAuthToken } from './api.js';
+import NavBar from './components/NavBar.vue';
+import AuthForm from './components/AuthForm.vue';
+import RandomAdvice from './components/RandomAdvice.vue';
+import SavedAdviceList from './components/SavedAdviceList.vue';
+
+export default {
+  components: {
+    NavBar,
+    AuthForm,
+    RandomAdvice,
+    SavedAdviceList
+  },
+  data() {
+    return {
+      user: null
+    };
+  },
+  created() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setAuthToken(token);
+      this.user = { token };
+    }
+  },
+  methods: {
+    handleLogin(token) {
+      setAuthToken(token);
+      this.user = { token };
+    },
+    handleLogout() {
+      setAuthToken(null);
+      this.user = null;
+    }
+  }
+};
+</script>
+
+<style>
+#app {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+</style>

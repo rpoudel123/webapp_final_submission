@@ -55,8 +55,11 @@ export default {
 <style>
 #app {
   font-family: Arial, sans-serif;
+  max-width: 1100px;
+  margin: auto;
   padding: 20px;
 }
+
 
 .center {
   display: flex;
